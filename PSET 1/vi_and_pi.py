@@ -23,8 +23,8 @@ def bellman_backup(state, action, R, T, gamma, V):
     backup_val: float
     """
     backup_val = 0.
-    # TODO: Implement (DONE)
-    # I assume that the action parameter is induced by some policy
+
+    # TODO:
 
     # V(s) <- R(s,a) + \gamma*\sum_{s' \in S} P(s'|s,a)V(s')
 
@@ -53,7 +53,8 @@ def policy_evaluation(policy, R, T, gamma, tol=1e-3):
     num_states, num_actions = R.shape
     value_function = np.zeros(num_states)
 
-    # TODO: Implementation
+    # TODO:
+
     i = 0
     value_function_prev = value_function
 
@@ -63,6 +64,7 @@ def policy_evaluation(policy, R, T, gamma, tol=1e-3):
             value_function[state] = R[state][policy[state]]
             for next_state in range(num_states):
                 value_function[state] += gamma*T[state][policy[state]][next_state]*value_function_prev[next_state]
+        i += 1
 
     return value_function
 
@@ -85,10 +87,23 @@ def policy_improvement(policy, R, T, V_policy, gamma):
     num_states, num_actions = R.shape
     new_policy = np.zeros(num_states, dtype=int)
 
-    ############################
-    # YOUR IMPLEMENTATION HERE #
+    # TODO:
 
-    ############################
+    for state in range(num_states):
+
+        best_action, best_val = None, None
+        
+        for action in range(num_actions):
+            val = R[state][action]
+
+            for next_state in range(num_states):
+                val += gamma*T[state][action][next_state]*V_policy(next_state)
+
+            if not best_val or val > best_val:
+                best_action, best_val = action, val
+
+        new_policy[state] = best_action
+
     return new_policy
 
 
@@ -110,10 +125,18 @@ def policy_iteration(R, T, gamma, tol=1e-3):
     num_states, num_actions = R.shape
     V_policy = np.zeros(num_states)
     policy = np.zeros(num_states, dtype=int)
-    ############################
-    # YOUR IMPLEMENTATION HERE #
+    
+    # TODO:
+    
+    i = 0
+    prev_policy = policy
 
-    ############################
+    # Repeat until convergence of policies
+    while i == 0 or max(abs(policy - prev_policy)) > 0:
+        prev_policy = policy
+        V_policy = policy_evaluation(policy, R, T, gamma, tol)
+        policy = policy_improvement(policy, R, T, V_policy, gamma)
+
     return V_policy, policy
 
 
